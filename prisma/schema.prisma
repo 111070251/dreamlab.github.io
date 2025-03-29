@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  dreams        Dream[]
+  dreamTags     DreamTag[]
+  settings      UserSettings?
+}
+
+model Dream {
+  id          String    @id @default(cuid())
+  title       String
+  content     String    @db.Text
+  analysis    String?   @db.Text
+  imageUrl    String?
+  mood        String?
+  isPublic    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags        DreamTag[]
+  comments    DreamComment[]
+}
+
+model DreamTag {
+  id        String   @id @default(cuid())
+  name      String
+  color     String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dreams    Dream[]
+  createdAt DateTime @default(now())
+}
+
+model DreamComment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  dreamId   String
+  dream     Dream    @relation(fields: [dreamId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserSettings {
+  id                    String   @id @default(cuid())
+  userId               String   @unique
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  theme                String   @default("dark")
+  emailNotifications   Boolean  @default(true)
+  language            String   @default("zh-TW")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+} 
