@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NEXTAUTH_URL: https://111070251.github.io/dreamlab.github.io
+      NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
     steps:
       - uses: actions/checkout@v4
       
@@ -36,6 +39,7 @@ jobs:
         
       - name: Build with Next.js
         run: |
+          echo "Building with NEXTAUTH_URL=$NEXTAUTH_URL"
           npm run build
           ls -la out/
         
