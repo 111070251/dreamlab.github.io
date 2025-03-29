@@ -30,10 +30,14 @@ jobs:
         uses: actions/configure-pages@v4
         
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm list next || true
         
       - name: Build with Next.js
-        run: npm run build
+        run: |
+          npm run build
+          ls -la out/
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
